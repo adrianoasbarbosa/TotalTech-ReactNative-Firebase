@@ -1,7 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Importa o hook useNavigation
 import React from 'react';
 import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importa o hook useNavigation
 
 export default function Inicio() {
     const navigation = useNavigation(); // Obtém o objeto de navegação
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     },
     bannerWrapper: {
         alignItems: 'center',
-        marginVertical: 20,
+
     },
     bannerContainer: {
         justifyContent: 'center',
