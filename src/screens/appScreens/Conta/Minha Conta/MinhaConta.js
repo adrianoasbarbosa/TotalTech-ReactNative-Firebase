@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Button, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
-export default function MinhaConta({navigation}){
+export default function MinhaConta({ navigation }) {
   const handleEditProfile = () => {
     Alert.prompt("Editar Perfil", "Digite o novo nome:", [
       {
@@ -11,15 +11,15 @@ export default function MinhaConta({navigation}){
       {
         text: "OK",
         onPress: (name) => console.log("Novo nome:", name)
-       
-      } 
-    ]);navigation.navigate('Editar')
+      }
+    ]);
+    navigation.navigate('Editar');
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerText}>Minha Conta</Text>
@@ -47,7 +47,7 @@ export default function MinhaConta({navigation}){
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

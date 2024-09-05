@@ -17,6 +17,7 @@ import OnBoarding from '../screens/authentication/OnBoarding/OnBoarding';
 import Splash from '../screens/splashScreens/Splash/Splash';
 import MinhaConta from '../screens/appScreens/Conta/Minha Conta/MinhaConta';
 import Editar from '../screens/appScreens/Conta/Minha Conta/Alterar Conta/Editar';
+import Favoritos from '../screens/appScreens/Conta/Favoritos/Favoritos';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,7 @@ export default function Routes() {
             <Stack.Screen name="RecuperarSenha" component={RecuperarSenha} />
             <Stack.Screen name="MinhaConta" component={MinhaConta} />
             <Stack.Screen name="Editar" component={Editar} />
+            <Stack.Screen name="Favoritos" component={Favoritos} />
             <Stack.Screen name="DrawerApp" component={DrawerApp} />
         </Stack.Navigator>
     )
