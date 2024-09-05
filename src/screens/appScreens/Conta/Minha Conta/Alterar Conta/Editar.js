@@ -1,12 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
-const EditAccountScreen = () => {
+export default function Editar() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      {/* Cabeçalho */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerText}>Alterar Conta</Text>
@@ -48,6 +50,7 @@ const EditAccountScreen = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -116,5 +119,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-export default EditAccountScreen;

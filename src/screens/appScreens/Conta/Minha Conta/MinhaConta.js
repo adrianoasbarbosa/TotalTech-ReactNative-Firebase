@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Button, TouchableOpacity, Alert } from 'react-native';
 
-const App = () => {
+export default function MinhaConta({navigation}){
   const handleEditProfile = () => {
     Alert.prompt("Editar Perfil", "Digite o novo nome:", [
       {
@@ -11,8 +11,9 @@ const App = () => {
       {
         text: "OK",
         onPress: (name) => console.log("Novo nome:", name)
-      }
-    ]);
+       
+      } 
+    ]);navigation.navigate('Editar')
   };
 
   return (
@@ -116,5 +117,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-export default App;
