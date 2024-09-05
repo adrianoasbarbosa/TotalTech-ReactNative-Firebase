@@ -1,6 +1,6 @@
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { FlatList, Image, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -12,7 +12,7 @@ export default function Anunciar({ navigation }) {
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
     const [cep, setCep] = useState('');
-    const [price, setPrice] = useState(''); // Novo estado para preço
+    const [price, setPrice] = useState('');
     const [photos, setPhotos] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -25,7 +25,7 @@ export default function Anunciar({ navigation }) {
         setModalVisible(false);
     };
     const handleCepChange = (text) => setCep(text);
-    const handlePriceChange = (text) => setPrice(text); // Novo handler para preço
+    const handlePriceChange = (text) => setPrice(text);
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -66,14 +66,16 @@ export default function Anunciar({ navigation }) {
         try {
             const userId = auth.currentUser.uid;
 
-            await setDoc(doc(db, "Anuncios", userId), {
+            // Adicionar um novo documento na coleção "Anuncios"
+            await addDoc(collection(db, "Anuncios"), {
                 title,
                 description,
                 category,
                 cep,
-                price, // Inclua o preço aqui
+                price,
                 userId,
                 images: photos,
+                createdAt: new Date(), // Adicione um campo para data de criação, se desejar
             });
 
             Toast.show({
@@ -84,7 +86,16 @@ export default function Anunciar({ navigation }) {
                 position: 'top'
             });
 
-            navigation.navigate('Inicio')
+            // Limpar todos os campos do formulário
+            setTitle('');
+            setDescription('');
+            setCategory('');
+            setCep('');
+            setPrice('');
+            setPhotos([]);
+
+            // Opcional: Navegar para outra tela ou exibir uma mensagem
+            // navigation.navigate('Inicio');
         } catch (e) {
             Toast.show({
                 type: 'error',
@@ -101,7 +112,7 @@ export default function Anunciar({ navigation }) {
         setDescription('');
         setCategory('');
         setCep('');
-        setPrice(''); // Limpar o preço
+        setPrice('');
         setPhotos([]);
     };
 

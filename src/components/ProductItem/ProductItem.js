@@ -1,21 +1,23 @@
 // ProductItem.js
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
-function ProductItem({ imageSrc, name, price, location, onPress }) {
+function ProductItem({ imageSrc, name, price, location, description, sellerName }) {
     return (
-        <TouchableOpacity style={styles.productItem} onPress={onPress}>
+        <View style={styles.productItem}>
             <Image source={{ uri: imageSrc }} style={styles.productImage} />
             <Text style={styles.productName}>{name}</Text>
             <Text style={styles.productPrice}>{price}</Text>
             <Text style={styles.productLocation}>{location}</Text>
-        </TouchableOpacity>
+            <Text style={styles.productDescription}>{description}</Text>
+            <Text style={styles.userName}>Vendido por: {sellerName}</Text>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     productItem: {
-        width: 200, // Ajuste a largura conforme necessário
+        width: 200,
         marginRight: 16,
         backgroundColor: '#f8f8f8',
         borderRadius: 8,
@@ -40,6 +42,17 @@ const styles = StyleSheet.create({
     productLocation: {
         fontSize: 12,
         color: '#777',
+        marginBottom: 4,
+    },
+    productDescription: {
+        fontSize: 12,
+        color: '#555',
+        marginBottom: 4,
+    },
+    userName: {
+        fontSize: 12,
+        color: '#000',
+        fontWeight: 'bold',
     },
 });
 

@@ -1,20 +1,13 @@
+// Inicio.js
+import { AntDesign } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { db } from '../../../config/firebaseConfig'; // Ajuste o caminho conforme necessário
+import ProductItem from '../../../components/ProductItem/ProductItem';
+import { db } from '../../../config/firebaseConfig';
 
-function ProductItem({ imageSrc, name, price, location }) {
-    return (
-        <View style={styles.productItem}>
-            <Image source={{ uri: imageSrc }} style={styles.productImage} />
-            <Text style={styles.productName}>{name}</Text>
-            <Text style={styles.productPrice}>{price}</Text>
-            <Text style={styles.productLocation}>{location}</Text>
-        </View>
-    );
-}
-
-export default function Inicio() {
+export default function Inicio({ navigation }) {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -32,17 +25,23 @@ export default function Inicio() {
     }, []);
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <LinearGradient
+            colors={['#FE8330', '#FFFFFF']}
+            style={styles.container}
+        >
             <View style={styles.header}>
-                <TouchableOpacity style={styles.menuButton}>
-                    <Text style={styles.menuText}>≡</Text>
+                <TouchableOpacity
+                    style={styles.menuButton}
+                    onPress={() => navigation.openDrawer()}
+                >
+                    <AntDesign name="menu-fold" size={24} color="#fff" />
                 </TouchableOpacity>
                 <View style={styles.searchContainer}>
-                    <Image style={styles.searchIcon} />
+                    <AntDesign name="search1" size={20} color="#000" style={styles.searchIcon} />
                     <Text style={styles.searchInput}>Buscar</Text>
                 </View>
                 <TouchableOpacity style={styles.cartButton}>
-                    <Image style={styles.cartIcon} />
+                    <AntDesign name="shoppingcart" size={24} color="#fff" />
                 </TouchableOpacity>
             </View>
 
@@ -77,38 +76,33 @@ export default function Inicio() {
                     {products.map((product, index) => (
                         <ProductItem
                             key={index}
-                            imageSrc={product.images[0]} // Assumindo que 'images' é um array de URLs
+                            imageSrc={product.images[0]}
                             name={product.title}
                             price={product.price}
                             location={product.location}
+                            description={product.description}
+                            sellerName={product.sellerName}
                         />
                     ))}
                 </View>
             </ScrollView>
 
             <Text style={styles.sectionTitle}>Processadores</Text>
-            {/* Adicione mais conteúdo ou seções aqui conforme necessário */}
-        </ScrollView>
+        </LinearGradient>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1, // Permite que o ScrollView expanda para preencher o conteúdo
-        backgroundColor: '#fff',
+        flex: 1,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FE8330',
     },
     menuButton: {
         marginRight: 16,
-    },
-    menuText: {
-        fontSize: 24,
-        color: '#fff',
     },
     searchContainer: {
         flex: 1,
@@ -128,10 +122,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     cartButton: {},
-    cartIcon: {
-        width: 24,
-        height: 24,
-    },
     locationContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -173,32 +163,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 16,
         paddingBottom: 16,
-    },
-    productItem: {
-        width: 200,
-        marginRight: 16,
-        backgroundColor: '#f8f8f8',
-        borderRadius: 8,
-        padding: 10,
-    },
-    productImage: {
-        width: '100%',
-        height: 120,
-        marginBottom: 8,
-        borderRadius: 8,
-    },
-    productName: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginBottom: 4,
-    },
-    productPrice: {
-        fontSize: 16,
-        color: '#00AA00',
-        marginBottom: 4,
-    },
-    productLocation: {
-        fontSize: 12,
-        color: '#777',
     },
 });
