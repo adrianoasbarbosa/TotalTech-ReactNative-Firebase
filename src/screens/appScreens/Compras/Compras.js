@@ -1,6 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Fonts from '../../../utils/Fonts';
 
 export default function Compras({ navigation }) {
     return (
@@ -30,9 +31,10 @@ const styles = StyleSheet.create({
     },
     headerText: {
         color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 20,
         marginLeft: 15,
+        fontFamily: Fonts['poppins-bold'],
+        marginBottom: -5,
     },
     emptyCart: {
         flex: 1,

@@ -1,7 +1,18 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function Inico() {
+function ProductItem({ imageSrc, name, price, location }) {
+    return (
+        <View style={styles.productItem}>
+            <Image source={{ uri: imageSrc }} style={styles.productImage} />
+            <Text style={styles.productName}>{name}</Text>
+            <Text style={styles.productPrice}>{price}</Text>
+            <Text style={styles.productLocation}>{location}</Text>
+        </View>
+    );
+}
+
+export default function Inicio() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -9,86 +20,73 @@ export default function Inico() {
                     <Text style={styles.menuText}>≡</Text>
                 </TouchableOpacity>
                 <View style={styles.searchContainer}>
-                    <Image
-
-                        style={styles.searchIcon}
-                    />
+                    <Image style={styles.searchIcon} />
                     <Text style={styles.searchInput}>Buscar</Text>
                 </View>
                 <TouchableOpacity style={styles.cartButton}>
-                    <Image
-
-                        style={styles.cartIcon}
-                    />
+                    <Image style={styles.cartIcon} />
                 </TouchableOpacity>
             </View>
 
             <View style={styles.locationContainer}>
-                <Image
-
-                    style={styles.locationIcon}
-                />
+                <Image style={styles.locationIcon} />
                 <Text style={styles.locationText}>Informe seu CEP</Text>
             </View>
 
             <View style={styles.categoryContainer}>
                 <TouchableOpacity style={styles.categoryItem}>
-                    <Image
-
-                        style={styles.categoryImage}
-                    />
+                    <Image style={styles.categoryImage} />
                     <Text style={styles.categoryText}>Gabinetes</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.categoryItem}>
-                    <Image
-
-                        style={styles.categoryImage}
-                    />
-                    <Text style={styles.categoryText}>Celulares e Smartfones</Text>
+                    <Image style={styles.categoryImage} />
+                    <Text style={styles.categoryText}>Celulares e Smartphones</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.categoryItem}>
-                    <Image
-
-                        style={styles.categoryImage}
-                    />
-                    <Text style={styles.categoryText}>Placa de Video</Text>
+                    <Image style={styles.categoryImage} />
+                    <Text style={styles.categoryText}>Placa de Vídeo</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.categoryItem}>
-                    <Image
-
-                        style={styles.categoryImage}
-                    />
+                    <Image style={styles.categoryImage} />
                     <Text style={styles.categoryText}>Placa Mãe</Text>
                 </TouchableOpacity>
             </View>
 
             <Text style={styles.sectionTitle}>Mais vistos no mundo em Gabinetes</Text>
 
-            <View style={styles.productContainer}>
-                <TouchableOpacity style={styles.productItem}>
-                    <Image
-
-                        style={styles.productImage}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.productContainer}>
+                    <ProductItem
+                        imageSrc="https://example.com/gabinete1.jpg"
+                        name="Gabinete Gamer Montech x3 MESH, Mid Tower, Black, ATX, Com 6 Fans Rainbow, Vidro Temperado, X3 MESH (B)"
+                        price="R$ 219,90"
+                        location="Itu - São Paulo"
                     />
-                    <Text style={styles.productName}>Gabinete Gamer Montech x3 MESH, Mid Tower, Black, ATX, Com 6 Fans Rainbow, Vidro Temperado, X3 MESH (B)</Text>
-                    <Text style={styles.productPrice}>R$ 219,90</Text>
-                    <Text style={styles.productLocation}>Itu - São Paulo</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.productItem}>
-                    <Image
-
-                        style={styles.productImage}
+                    <ProductItem
+                        imageSrc="https://example.com/gabinete1.jpg"
+                        name="Gabinete Gamer Montech x3 MESH, Mid Tower, Black, ATX, Com 6 Fans Rainbow, Vidro Temperado, X3 MESH (B)"
+                        price="R$ 219,90"
+                        location="Itu - São Paulo"
                     />
-                    <Text style={styles.productName}>Gabinete Gamer Montech x3 MESH, Mid Tower, Vidro Temperado, Black, ATX, Com 3 Fans Rainbow</Text>
-                    <Text style={styles.productPrice}>R$ 169,90</Text>
-                    <Text style={styles.productLocation}>Salto - São Paulo</Text>
-                </TouchableOpacity>
-            </View>
+                    <ProductItem
+                        imageSrc="https://example.com/gabinete1.jpg"
+                        name="Gabinete Gamer Montech x3 MESH, Mid Tower, Black, ATX, Com 6 Fans Rainbow, Vidro Temperado, X3 MESH (B)"
+                        price="R$ 219,90"
+                        location="Itu - São Paulo"
+                    />
+                    <ProductItem
+                        imageSrc="https://example.com/gabinete2.jpg"
+                        name="Gabinete Gamer Montech x3 MESH, Mid Tower, Vidro Temperado, Black, ATX, Com 3 Fans Rainbow"
+                        price="R$ 169,90"
+                        location="Salto - São Paulo"
+                    />
+                </View>
+            </ScrollView>
 
             <Text style={styles.sectionTitle}>Processadores</Text>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -99,7 +97,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FE8330', // Orange color
+        backgroundColor: '#FE8330',
     },
     menuButton: {
         marginRight: 16,
@@ -169,19 +167,21 @@ const styles = StyleSheet.create({
     },
     productContainer: {
         flexDirection: 'row',
-        padding: 16,
-        backgroundColor: '#fff',
-        borderColor: 'gray',
-        borderWidth: 1,
+        paddingHorizontal: 16,
+        paddingBottom: 16,
     },
     productItem: {
-        flex: 1,
+        width: 200, // Ajuste a largura conforme necessário
         marginRight: 16,
+        backgroundColor: '#f8f8f8',
+        borderRadius: 8,
+        padding: 10,
     },
     productImage: {
-        width: 120,
+        width: '100%',
         height: 120,
         marginBottom: 8,
+        borderRadius: 8,
     },
     productName: {
         fontSize: 14,
@@ -195,5 +195,6 @@ const styles = StyleSheet.create({
     },
     productLocation: {
         fontSize: 12,
+        color: '#777',
     },
 });
