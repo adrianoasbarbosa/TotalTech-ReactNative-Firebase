@@ -1,4 +1,3 @@
-// Inicio.js
 import { AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { collection, getDocs } from 'firebase/firestore';
@@ -13,7 +12,7 @@ export default function Inicio({ navigation }) {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'Anuncios')); // Nome da coleção
+                const querySnapshot = await getDocs(collection(db, 'Anuncios'));
                 const productsData = querySnapshot.docs.map(doc => doc.data());
                 setProducts(productsData);
             } catch (error) {
@@ -51,22 +50,45 @@ export default function Inicio({ navigation }) {
             </View>
 
             <View style={styles.categoryContainer}>
-                <TouchableOpacity style={styles.categoryItem}>
-                    <Image style={styles.categoryImage} />
-                    <Text style={styles.categoryText}>Gabinetes</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.categoryItem}>
-                    <Image style={styles.categoryImage} />
-                    <Text style={styles.categoryText}>Celulares e Smartphones</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.categoryItem}>
-                    <Image style={styles.categoryImage} />
-                    <Text style={styles.categoryText}>Placa de Vídeo</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.categoryItem}>
-                    <Image style={styles.categoryImage} />
-                    <Text style={styles.categoryText}>Placa Mãe</Text>
-                </TouchableOpacity>
+                <LinearGradient
+                    colors={['#FE8330', '#FFFFFF']}
+                    style={styles.gradientBackground}
+                >
+                    <TouchableOpacity style={styles.categoryItem}>
+                        <Image style={styles.categoryImage} />
+                        <Text style={styles.categoryText}>Gabinetes</Text>
+                    </TouchableOpacity>
+                </LinearGradient>
+
+                <LinearGradient
+                    colors={['#FE8330', '#FFFFFF']}
+                    style={styles.gradientBackground}
+                >
+                    <TouchableOpacity style={styles.categoryItem}>
+                        <Image style={styles.categoryImage} />
+                        <Text style={styles.categoryText}>Celulares e Smartphones</Text>
+                    </TouchableOpacity>
+                </LinearGradient>
+
+                <LinearGradient
+                    colors={['#FE8330', '#FFFFFF']}
+                    style={styles.gradientBackground}
+                >
+                    <TouchableOpacity style={styles.categoryItem}>
+                        <Image style={styles.categoryImage} />
+                        <Text style={styles.categoryText}>Placa de Vídeo</Text>
+                    </TouchableOpacity>
+                </LinearGradient>
+
+                <LinearGradient
+                    colors={['#FE8330', '#FFFFFF']}
+                    style={styles.gradientBackground}
+                >
+                    <TouchableOpacity style={styles.categoryItem}>
+                        <Image style={styles.categoryImage} />
+                        <Text style={styles.categoryText}>Placa Mãe</Text>
+                    </TouchableOpacity>
+                </LinearGradient>
             </View>
 
             <Text style={styles.sectionTitle}>Mais vistos no mundo em Gabinetes</Text>
@@ -139,7 +161,6 @@ const styles = StyleSheet.create({
     categoryContainer: {
         flexDirection: 'row',
         padding: 16,
-        backgroundColor: '#FE8330',
     },
     categoryItem: {
         flex: 1,
@@ -163,5 +184,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 16,
         paddingBottom: 16,
+    },
+    gradientBackground: {
+        flex: 1,
+        padding: 16,
+        borderRadius: 8,
+        marginRight: 16,
     },
 });
