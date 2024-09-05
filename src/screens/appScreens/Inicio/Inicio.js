@@ -1,5 +1,5 @@
+// Inicio.js
 import { AntDesign } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -12,7 +12,7 @@ export default function Inicio({ navigation }) {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'Anuncios'));
+                const querySnapshot = await getDocs(collection(db, 'Anuncios')); // Nome da coleção
                 const productsData = querySnapshot.docs.map(doc => doc.data());
                 setProducts(productsData);
             } catch (error) {
@@ -24,99 +24,76 @@ export default function Inicio({ navigation }) {
     }, []);
 
     return (
-        <LinearGradient
-            colors={['#FE8330', '#FFFFFF']}
-            style={styles.container}
-        >
-            <View style={styles.header}>
-                <TouchableOpacity
-                    style={styles.menuButton}
-                    onPress={() => navigation.openDrawer()}
-                >
-                    <AntDesign name="menu-fold" size={24} color="#fff" />
-                </TouchableOpacity>
-                <View style={styles.searchContainer}>
-                    <AntDesign name="search1" size={20} color="#000" style={styles.searchIcon} />
-                    <Text style={styles.searchInput}>Buscar</Text>
+        <ScrollView>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity
+                        style={styles.menuButton}
+                        onPress={() => navigation.openDrawer()}
+                    >
+                        <AntDesign name="menu-fold" size={24} color="#fff" />
+                    </TouchableOpacity>
+                    <View style={styles.searchContainer}>
+                        <AntDesign name="search1" size={20} color="#000" style={styles.searchIcon} />
+                        <Text style={styles.searchInput}>Buscar</Text>
+                    </View>
+                    <TouchableOpacity style={styles.cartButton}>
+                        <AntDesign name="shoppingcart" size={24} color="#fff" />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.cartButton}>
-                    <AntDesign name="shoppingcart" size={24} color="#fff" />
-                </TouchableOpacity>
-            </View>
 
-            <View style={styles.locationContainer}>
-                <Image style={styles.locationIcon} />
-                <Text style={styles.locationText}>Informe seu CEP</Text>
-            </View>
+                <View style={styles.locationContainer}>
+                    <Image style={styles.locationIcon} />
+                    <Text style={styles.locationText}>Informe seu CEP</Text>
+                </View>
 
-            <View style={styles.categoryContainer}>
-                <LinearGradient
-                    colors={['#FE8330', '#FFFFFF']}
-                    style={styles.gradientBackground}
-                >
+                <View style={styles.categoryContainer}>
                     <TouchableOpacity style={styles.categoryItem}>
                         <Image style={styles.categoryImage} />
                         <Text style={styles.categoryText}>Gabinetes</Text>
                     </TouchableOpacity>
-                </LinearGradient>
-
-                <LinearGradient
-                    colors={['#FE8330', '#FFFFFF']}
-                    style={styles.gradientBackground}
-                >
                     <TouchableOpacity style={styles.categoryItem}>
                         <Image style={styles.categoryImage} />
                         <Text style={styles.categoryText}>Celulares e Smartphones</Text>
                     </TouchableOpacity>
-                </LinearGradient>
-
-                <LinearGradient
-                    colors={['#FE8330', '#FFFFFF']}
-                    style={styles.gradientBackground}
-                >
                     <TouchableOpacity style={styles.categoryItem}>
                         <Image style={styles.categoryImage} />
                         <Text style={styles.categoryText}>Placa de Vídeo</Text>
                     </TouchableOpacity>
-                </LinearGradient>
-
-                <LinearGradient
-                    colors={['#FE8330', '#FFFFFF']}
-                    style={styles.gradientBackground}
-                >
                     <TouchableOpacity style={styles.categoryItem}>
                         <Image style={styles.categoryImage} />
                         <Text style={styles.categoryText}>Placa Mãe</Text>
                     </TouchableOpacity>
-                </LinearGradient>
-            </View>
-
-            <Text style={styles.sectionTitle}>Mais vistos no mundo em Gabinetes</Text>
-
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={styles.productContainer}>
-                    {products.map((product, index) => (
-                        <ProductItem
-                            key={index}
-                            imageSrc={product.images[0]}
-                            name={product.title}
-                            price={product.price}
-                            location={product.location}
-                            description={product.description}
-                            sellerName={product.sellerName}
-                        />
-                    ))}
                 </View>
-            </ScrollView>
 
-            <Text style={styles.sectionTitle}>Processadores</Text>
-        </LinearGradient>
+                <Text style={styles.sectionTitle}>Mais vistos no mundo em Gabinetes</Text>
+
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <View style={styles.productContainer}>
+                        {products.map((product, index) => (
+                            <ProductItem
+                                key={index}
+                                imageSrc={product.images[0]}
+                                name={product.title}
+                                price={product.price}
+                                location={product.location}
+                                description={product.description}
+                                sellerName={product.sellerName}
+                            />
+                        ))}
+                    </View>
+                </ScrollView>
+
+                <Text style={styles.sectionTitle}>Processadores</Text>
+            </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FE8330', // Cor de fundo sólida
     },
     header: {
         flexDirection: 'row',
@@ -161,6 +138,7 @@ const styles = StyleSheet.create({
     categoryContainer: {
         flexDirection: 'row',
         padding: 16,
+        backgroundColor: '#FE8330',
     },
     categoryItem: {
         flex: 1,
@@ -184,11 +162,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 16,
         paddingBottom: 16,
-    },
-    gradientBackground: {
-        flex: 1,
-        padding: 16,
-        borderRadius: 8,
-        marginRight: 16,
+        backgroundColor: '#fff', // Removendo cor laranja do fundo dos produtos
     },
 });

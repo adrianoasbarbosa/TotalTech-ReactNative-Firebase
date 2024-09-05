@@ -1,10 +1,32 @@
 import { AntDesign } from '@expo/vector-icons';
-import { signOut } from 'firebase/auth';
-import React from 'react';
+import { getAuth, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { auth } from '../../../config/firebaseConfig';
+import { db } from '../../../config/firebaseConfig';
 
 export default function Conta({ navigation }) {
+
+    const [userInfo, setUserInfo] = useState({ apelido: '', email: '' });
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, 'Users', user.uid));
+                    if (userDoc.exists()) {
+                        setUserInfo(userDoc.data());
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar informações do usuário:', error);
+                }
+            }
+        };
+
+        fetchUserInfo();
+    }, [user]);
 
     const handleLogout = async () => {
         try {
@@ -23,7 +45,8 @@ export default function Conta({ navigation }) {
                 </View>
                 <View style={styles.profile}>
                     <AntDesign name="user" size={50} color="#000" />
-                    <Text style={styles.profileName}>Bruno B.</Text>
+                    <Text style={styles.profileName}>{userInfo.apelido || 'Usuário'}</Text>
+                    <Text style={styles.headerTextEmail}>{userInfo.email || 'email@example.com'}</Text>
                 </View>
                 <TouchableOpacity
                     style={styles.menuItem}
