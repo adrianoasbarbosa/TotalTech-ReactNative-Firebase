@@ -1,11 +1,10 @@
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { doc, setDoc } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import React, { useState } from 'react';
 import { FlatList, Image, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { auth, db, storage } from '../../../config/firebaseConfig';
+import { auth, db } from '../../../config/firebaseConfig';
 import Fonts from '../../../utils/Fonts';
 
 export default function Anunciar({ navigation }) {
@@ -13,6 +12,7 @@ export default function Anunciar({ navigation }) {
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
     const [cep, setCep] = useState('');
+    const [price, setPrice] = useState(''); // Novo estado para preço
     const [photos, setPhotos] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -25,44 +25,34 @@ export default function Anunciar({ navigation }) {
         setModalVisible(false);
     };
     const handleCepChange = (text) => setCep(text);
+    const handlePriceChange = (text) => setPrice(text); // Novo handler para preço
 
-    const handleImagePicker = async () => {
-        if (photos.length >= 6) {
-            Toast.show({
-                type: 'error',
-                text1: 'Limite de fotos',
-                text2: 'Você já adicionou o máximo de 6 fotos.',
-                visibilityTime: 3000,
-                position: 'top'
-            });
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
             quality: 1,
         });
 
         if (!result.canceled) {
-            setPhotos([...photos, result.uri]);
+            const uri = result.assets[0].uri;
+            if (photos.length < 6) {
+                setPhotos([...photos, uri]);
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Limite de Fotos',
+                    text2: 'Você pode adicionar no máximo 6 fotos.',
+                    visibilityTime: 3000,
+                    position: 'top'
+                });
+            }
         }
     };
 
-    const uploadImages = async () => {
-        const uploadPromises = photos.map(async (photoUri, index) => {
-            const response = await fetch(photoUri);
-            const blob = await response.blob();
-            const imageRef = ref(storage, `images/${Date.now()}_${index}.jpg`);
-            await uploadBytes(imageRef, blob);
-            const downloadURL = await getDownloadURL(imageRef);
-            return downloadURL;
-        });
-
-        return Promise.all(uploadPromises);
-    };
-
     const handleSubmit = async () => {
-        if (!title || !description || !category || !cep) {
+        if (!title || !description || !category || !cep || !price) {
             Toast.show({
                 type: 'error',
                 text1: 'Erro',
@@ -74,17 +64,16 @@ export default function Anunciar({ navigation }) {
         }
 
         try {
-            const user = auth.currentUser;
-            const userId = user.uid;
-            const imageUrls = await uploadImages();
+            const userId = auth.currentUser.uid;
 
             await setDoc(doc(db, "Anuncios", userId), {
-                title: title,
-                description: description,
-                category: category,
-                cep: cep,
-                userId: userId,
-                images: imageUrls,
+                title,
+                description,
+                category,
+                cep,
+                price, // Inclua o preço aqui
+                userId,
+                images: photos,
             });
 
             Toast.show({
@@ -95,7 +84,7 @@ export default function Anunciar({ navigation }) {
                 position: 'top'
             });
 
-            navigation.navigate('Inicial');
+            navigation.navigate('Inicio')
         } catch (e) {
             Toast.show({
                 type: 'error',
@@ -112,12 +101,13 @@ export default function Anunciar({ navigation }) {
         setDescription('');
         setCategory('');
         setCep('');
+        setPrice(''); // Limpar o preço
         setPhotos([]);
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.container}>
                     <View style={styles.header}>
                         <TouchableOpacity style={styles.backButton}>
@@ -131,22 +121,26 @@ export default function Anunciar({ navigation }) {
                     <View style={styles.content}>
                         <View style={styles.imageContainer}>
                             <View style={styles.imageGrid}>
-                                {[...Array(6)].map((_, index) => (
+                                {photos.map((photo, index) => (
                                     <TouchableOpacity
                                         key={index}
-                                        style={[styles.image, index < photos.length ? styles.imageWithPhoto : {}]}
-                                        onPress={index >= photos.length ? handleImagePicker : undefined}
+                                        style={styles.image}
+                                        onPress={pickImage}
                                     >
-                                        {index < photos.length ? (
-                                            <Image
-                                                source={{ uri: photos[index] }}
-                                                style={styles.imageContent}
-                                            />
-                                        ) : (
-                                            <Text style={styles.imageText}>+</Text>
-                                        )}
+                                        <Image
+                                            source={{ uri: photo }}
+                                            style={styles.imageContent}
+                                        />
                                     </TouchableOpacity>
                                 ))}
+                                {photos.length < 6 && (
+                                    <TouchableOpacity
+                                        style={[styles.image, styles.addImage]}
+                                        onPress={pickImage}
+                                    >
+                                        <Text style={styles.imageText}>+</Text>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                             <Text style={styles.imageInfo}>{photos.length}/6</Text>
                         </View>
@@ -177,7 +171,7 @@ export default function Anunciar({ navigation }) {
                                     style={styles.input}
                                     placeholder="Selecione uma categoria"
                                     value={category}
-                                    editable={false} // Impede a edição manual do campo
+                                    editable={false}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -189,6 +183,16 @@ export default function Anunciar({ navigation }) {
                                 keyboardType="numeric"
                                 value={cep}
                                 onChangeText={handleCepChange}
+                            />
+                        </View>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Preço*</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Ex: 150,00"
+                                keyboardType="numeric"
+                                value={price}
+                                onChangeText={handlePriceChange}
                             />
                         </View>
                         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
@@ -224,10 +228,16 @@ export default function Anunciar({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
+    scrollViewContent: {
+        flexGrow: 1,
+    },
     container: {
         flex: 1,
         backgroundColor: '#F5F5F5',
-        paddingBottom: 20, // Adiciona espaço na parte inferior para evitar sobreposição
+        paddingBottom: 20,
     },
     header: {
         flexDirection: 'row',
@@ -239,15 +249,10 @@ const styles = StyleSheet.create({
     backButton: {
         padding: 10,
     },
-    backButtonText: {
-        fontSize: 20,
-        color: 'white',
-        fontFamily: Fonts['poppins-bold'], // Adicionar fonte
-    },
     headerText: {
         fontSize: 20,
         color: 'white',
-        fontFamily: Fonts['poppins-bold'], // Adicionar fonte
+        fontFamily: Fonts['poppins-bold'],
         fontWeight: 'bold',
     },
     clearButton: {
@@ -256,7 +261,7 @@ const styles = StyleSheet.create({
     clearButtonText: {
         fontSize: 16,
         color: 'white',
-        fontFamily: Fonts['poppins-regular'], // Adicionar fonte
+        fontFamily: Fonts['poppins-regular'],
     },
     content: {
         padding: 20,
@@ -281,9 +286,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10,
     },
-    imageWithPhoto: {
-        backgroundColor: 'transparent',
-        borderColor: 'transparent',
+    addImage: {
+        backgroundColor: '#f0f0f0',
+        borderColor: '#ddd',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     imageContent: {
         width: '100%',
@@ -298,13 +305,13 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#666',
         marginTop: 5,
-        fontFamily: Fonts['poppins-regular'], // Adicionar fonte
+        fontFamily: Fonts['poppins-regular'],
     },
     label: {
         fontSize: 16,
         marginBottom: 5,
         fontWeight: 'bold',
-        fontFamily: Fonts['poppins-bold'], // Adicionar fonte
+        fontFamily: Fonts['poppins-bold'],
     },
     input: {
         borderWidth: 1,
@@ -312,7 +319,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         marginBottom: 15,
-        fontFamily: Fonts['poppins-regular'], // Adicionar fonte
+        fontFamily: Fonts['poppins-regular'],
     },
     button: {
         backgroundColor: '#FE8330',
@@ -324,17 +331,17 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-        fontFamily: Fonts['poppins-bold'], // Adicionar fonte
+        fontFamily: Fonts['poppins-bold'],
     },
     terms: {
         fontSize: 12,
         marginTop: 10,
         textAlign: 'center',
-        fontFamily: Fonts['poppins-regular'], // Adicionar fonte
+        fontFamily: Fonts['poppins-regular'],
     },
     termsLink: {
         color: '#FE8330',
-        fontFamily: Fonts['poppins-regular'], // Adicionar fonte
+        fontFamily: Fonts['poppins-regular'],
     },
     modalContainer: {
         flex: 1,
@@ -350,6 +357,6 @@ const styles = StyleSheet.create({
     categoryItem: {
         padding: 10,
         fontSize: 16,
-        fontFamily: Fonts['poppins-regular'], // Adicionar fonte
+        fontFamily: Fonts['poppins-regular'],
     },
 });

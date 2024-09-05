@@ -1,5 +1,7 @@
-import React from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { db } from '../../../config/firebaseConfig'; // Ajuste o caminho conforme necessário
 
 function ProductItem({ imageSrc, name, price, location }) {
     return (
@@ -13,8 +15,24 @@ function ProductItem({ imageSrc, name, price, location }) {
 }
 
 export default function Inicio() {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'Anuncios')); // Nome da coleção
+                const productsData = querySnapshot.docs.map(doc => doc.data());
+                setProducts(productsData);
+            } catch (error) {
+                console.error("Erro ao buscar produtos: ", error);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity style={styles.menuButton}>
                     <Text style={styles.menuText}>≡</Text>
@@ -56,41 +74,27 @@ export default function Inicio() {
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.productContainer}>
-                    <ProductItem
-                        imageSrc="https://example.com/gabinete1.jpg"
-                        name="Gabinete Gamer Montech x3 MESH, Mid Tower, Black, ATX, Com 6 Fans Rainbow, Vidro Temperado, X3 MESH (B)"
-                        price="R$ 219,90"
-                        location="Itu - São Paulo"
-                    />
-                    <ProductItem
-                        imageSrc="https://example.com/gabinete1.jpg"
-                        name="Gabinete Gamer Montech x3 MESH, Mid Tower, Black, ATX, Com 6 Fans Rainbow, Vidro Temperado, X3 MESH (B)"
-                        price="R$ 219,90"
-                        location="Itu - São Paulo"
-                    />
-                    <ProductItem
-                        imageSrc="https://example.com/gabinete1.jpg"
-                        name="Gabinete Gamer Montech x3 MESH, Mid Tower, Black, ATX, Com 6 Fans Rainbow, Vidro Temperado, X3 MESH (B)"
-                        price="R$ 219,90"
-                        location="Itu - São Paulo"
-                    />
-                    <ProductItem
-                        imageSrc="https://example.com/gabinete2.jpg"
-                        name="Gabinete Gamer Montech x3 MESH, Mid Tower, Vidro Temperado, Black, ATX, Com 3 Fans Rainbow"
-                        price="R$ 169,90"
-                        location="Salto - São Paulo"
-                    />
+                    {products.map((product, index) => (
+                        <ProductItem
+                            key={index}
+                            imageSrc={product.images[0]} // Assumindo que 'images' é um array de URLs
+                            name={product.title}
+                            price={product.price}
+                            location={product.location}
+                        />
+                    ))}
                 </View>
             </ScrollView>
 
             <Text style={styles.sectionTitle}>Processadores</Text>
-        </View>
+            {/* Adicione mais conteúdo ou seções aqui conforme necessário */}
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1, // Permite que o ScrollView expanda para preencher o conteúdo
         backgroundColor: '#fff',
     },
     header: {
@@ -171,7 +175,7 @@ const styles = StyleSheet.create({
         paddingBottom: 16,
     },
     productItem: {
-        width: 200, // Ajuste a largura conforme necessário
+        width: 200,
         marginRight: 16,
         backgroundColor: '#f8f8f8',
         borderRadius: 8,
