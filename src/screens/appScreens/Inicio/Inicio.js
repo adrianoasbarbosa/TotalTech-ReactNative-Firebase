@@ -1,10 +1,10 @@
 import { AntDesign } from '@expo/vector-icons';
 import React from 'react';
 import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importa o hook useNavigation
+import { useNavigation } from '@react-navigation/native';
 
 export default function Inicio() {
-    const navigation = useNavigation(); // Obtém o objeto de navegação
+    const navigation = useNavigation();
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -20,11 +20,14 @@ export default function Inicio() {
                         placeholderTextColor="#999"
                     />
                     <TouchableOpacity style={styles.searchIcon}>
-                        <AntDesign name="search1" size={24} color="white" />
+                        <AntDesign name="shoppingcart" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.cepContainer}>
-                    <Text style={styles.cepText}>Informe seu CEP</Text>
+                    <View style={styles.locationWrapper}>
+                        <AntDesign name="enviromento" size={20} color="#FE8330" />
+                        <Text style={styles.cepText}>Informe seu CEP</Text>
+                    </View>
                 </View>
                 <View style={styles.bannerWrapper}>
                     <ScrollView
@@ -65,19 +68,58 @@ export default function Inicio() {
                         <Text style={styles.categoryText}>Placas Mãe</Text>
                     </View>
                 </ScrollView>
+
+                {/* Seção de Gabinetes */}
                 <View style={styles.productsContainer}>
                     <Text style={styles.sectionTitle}>Mais vistos no mundo em Gabinetes</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        <View style={styles.productCard}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.productsScrollContainer}>
+                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 1 })}>
                             <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
-                            <Text style={styles.productName}>Gabinete Gamer</Text>
+                            <Text style={styles.productName}>Gabinete Gamer A</Text>
                             <Text style={styles.productPrice}>R$ 219,90</Text>
-                        </View>
-                        <View style={styles.productCard}>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 2 })}>
                             <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
-                            <Text style={styles.productName}>Gabinete Gamer</Text>
+                            <Text style={styles.productName}>Gabinete Gamer B</Text>
                             <Text style={styles.productPrice}>R$ 169,90</Text>
-                        </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 3 })}>
+                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
+                            <Text style={styles.productName}>Gabinete Gamer C</Text>
+                            <Text style={styles.productPrice}>R$ 249,90</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 4 })}>
+                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
+                            <Text style={styles.productName}>Gabinete Gamer D</Text>
+                            <Text style={styles.productPrice}>R$ 199,90</Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+
+                {/* Seção de Placas Mãe */}
+                <View style={styles.productsContainer}>
+                    <Text style={styles.sectionTitle}>Mais vistos no mundo em Placas Mãe</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 5 })}>
+                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
+                            <Text style={styles.productName}>Placa Mãe A</Text>
+                            <Text style={styles.productPrice}>R$ 299,90</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 6 })}>
+                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
+                            <Text style={styles.productName}>Placa Mãe B</Text>
+                            <Text style={styles.productPrice}>R$ 249,90</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 7 })}>
+                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
+                            <Text style={styles.productName}>Placa Mãe C</Text>
+                            <Text style={styles.productPrice}>R$ 329,90</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 8 })}>
+                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
+                            <Text style={styles.productName}>Placa Mãe D</Text>
+                            <Text style={styles.productPrice}>R$ 279,90</Text>
+                        </TouchableOpacity>
                     </ScrollView>
                 </View>
             </ScrollView>
@@ -112,11 +154,19 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     cepContainer: {
-        paddingHorizontal: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
         paddingVertical: 10,
+        paddingHorizontal: 10,
+    },
+    locationWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
     },
     cepText: {
         color: '#999',
+        marginLeft: 8,
     },
     bannerWrapper: {
         alignItems: 'center',
@@ -152,11 +202,12 @@ const styles = StyleSheet.create({
     },
     productsContainer: {
         paddingHorizontal: 23,
+        marginVertical: 20, // Espaçamento vertical entre as seções
     },
     sectionTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        marginVertical: 10,
+        marginVertical: 10, // Espaçamento entre o título e os produtos
     },
     productCard: {
         width: 150,
