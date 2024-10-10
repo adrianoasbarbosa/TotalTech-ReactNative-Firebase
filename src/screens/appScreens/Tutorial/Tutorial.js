@@ -123,9 +123,12 @@ export default function Tutorial({ navigation }) {
                 </TouchableOpacity>
                 <Text style={styles.title}>Tutorial</Text>
             </View>
+
             <Text style={styles.subtitle}>
                 Aqui você terá acesso a informações sobre cada componente do seu computador.
             </Text>
+
+
             {['Placa Mãe', 'Processadores', 'Placa de Vídeo', 'Armazenamento', 'Memória', 'Gabinete'].map((item, index) => (
                 <View key={index}>
                     <TouchableOpacity style={styles.option} onPress={() => handleOpenModal(item)}>
@@ -135,7 +138,6 @@ export default function Tutorial({ navigation }) {
                 </View>
             ))}
 
-            {/* Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}

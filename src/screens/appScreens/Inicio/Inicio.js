@@ -6,14 +6,14 @@ import { db } from '../../../config/firebaseConfig';
 
 export default function Inicio({ navigation }) {
     const [products, setProducts] = useState([]);
-    const [isRefreshing, setIsRefreshing] = useState(false); // Estado para controle de refresh
+    const [isRefreshing, setIsRefreshing] = useState(false); 
 
     const fetchProducts = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'Anuncios'));
             const productsData = querySnapshot.docs.map(doc => ({
-                id: doc.id,    // Inclui o ID do documento
-                ...doc.data()  // Mantém os outros dados do documento
+                id: doc.id,  
+                ...doc.data() 
             }));
             setProducts(productsData);
         } catch (error) {
@@ -23,12 +23,12 @@ export default function Inicio({ navigation }) {
 
     const onRefresh = async () => {
         setIsRefreshing(true);
-        await fetchProducts(); // Recarrega os produtos
+        await fetchProducts();
         setIsRefreshing(false);
     };
 
     useEffect(() => {
-        fetchProducts(); // Carrega os produtos na primeira vez
+        fetchProducts(); 
     }, []);
 
     return (
