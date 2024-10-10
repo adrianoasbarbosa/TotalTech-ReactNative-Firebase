@@ -52,22 +52,35 @@ export default function Anunciar({ navigation }) {
     };
 
     const handleSubmit = async () => {
+        // Verificar se o usuário está logado
+        const user = auth.currentUser;
+        if (!user) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'Você precisa estar logado para enviar um anúncio.',
+                visibilityTime: 3000,
+                position: 'top',
+            });
+            return;
+        }
+
         if (!title || !description || !category || !cep || !price) {
             Toast.show({
                 type: 'error',
                 text1: 'Erro',
                 text2: 'Por favor, preencha todos os campos.',
                 visibilityTime: 3000,
-                position: 'top'
+                position: 'top',
             });
             return;
         }
 
         try {
-            const userId = auth.currentUser.uid;
+            const userId = user.uid;
 
             // Adicionar um novo documento na coleção "Anuncios"
-            await addDoc(collection(db, "Anuncios"), {
+            const docRef = await addDoc(collection(db, "Anuncios"), {
                 title,
                 description,
                 category,
@@ -75,15 +88,18 @@ export default function Anunciar({ navigation }) {
                 price,
                 userId,
                 images: photos,
-                createdAt: new Date(), // Adicione um campo para data de criação, se desejar
+                createdAt: new Date(),
             });
+
+            // Capturar o ID do documento
+            const productId = docRef.id;
 
             Toast.show({
                 type: 'success',
                 text1: 'Sucesso',
                 text2: 'Anúncio cadastrado com sucesso!',
                 visibilityTime: 3000,
-                position: 'top'
+                position: 'top',
             });
 
             // Limpar todos os campos do formulário
@@ -94,15 +110,15 @@ export default function Anunciar({ navigation }) {
             setPrice('');
             setPhotos([]);
 
-            // Opcional: Navegar para outra tela ou exibir uma mensagem
-            // navigation.navigate('Inicio');
+            // Navegar para a tela inicial, passando o ID do produto
+            navigation.navigate('Inicio', { productId });
         } catch (e) {
             Toast.show({
                 type: 'error',
                 text1: 'Erro ao cadastrar',
                 text2: e.message,
                 visibilityTime: 3000,
-                position: 'top'
+                position: 'top',
             });
         }
     };
@@ -121,7 +137,7 @@ export default function Anunciar({ navigation }) {
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <TouchableOpacity style={styles.backButton}>
+                        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                             <AntDesign name="arrowleft" size={24} color="white" />
                         </TouchableOpacity>
                         <Text style={styles.headerText}>Inserir anúncio</Text>

@@ -1,9 +1,29 @@
 import React from 'react';
+<<<<<<< HEAD
 import { View, Text, Image, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+=======
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+
+export default function MinhaConta({ navigation }) {
+  const handleEditProfile = () => {
+    Alert.prompt("Editar Perfil", "Digite o novo nome:", [
+      {
+        text: "Cancelar",
+        style: "cancel"
+      },
+      {
+        text: "OK",
+        onPress: (name) => console.log("Novo nome:", name)
+      }
+    ]);
+    navigation.navigate('Editar');
+  };
+>>>>>>> origin/main
 
 const MinhaContaScreen = () => {
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
       {/* Botão de voltar */}
       <TouchableOpacity style={styles.backButton}>
         <Text style={styles.backButtonText}>{"<"}</Text>
@@ -15,6 +35,13 @@ const MinhaContaScreen = () => {
       {/* Foto de perfil */}
       <View style={styles.profilePicture}>
         <Text style={styles.profilePictureText}>160 x 160</Text>
+=======
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Minha Conta</Text>
+>>>>>>> origin/main
       </View>
 
       {/* Informações da conta */}
@@ -34,7 +61,7 @@ const MinhaContaScreen = () => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -92,5 +119,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+<<<<<<< HEAD
 
 export default MinhaContaScreen;
+=======
+>>>>>>> origin/main

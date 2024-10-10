@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, View, Dimensions } from 'react-native';
 import { auth } from '../../../config/firebaseConfig';
 
 export default function Splash({ navigation }) {
@@ -20,11 +20,16 @@ export default function Splash({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Image source={require('../../../assets/images/logo.png')} style={styles.image} />
+            <Image
+                source={require('../../../assets/images/logo.png')}
+                style={styles.image}
+            />
             <ActivityIndicator size="large" color="#fff" style={styles.loader} />
         </View>
     );
 };
+
+const { width, height } = Dimensions.get('window'); // Obter dimensões da tela
 
 const styles = StyleSheet.create({
     container: {
@@ -34,12 +39,12 @@ const styles = StyleSheet.create({
         backgroundColor: "#FE8330",
     },
     image: {
-        width: 450,
-        height: 450,
+        width: width * 0.8,  // 80% da largura da tela
+        height: height * 0.4, // 40% da altura da tela
         resizeMode: 'contain',
     },
     loader: {
         position: 'absolute',
-        bottom: 190,
+        bottom: 100,
     },
 });

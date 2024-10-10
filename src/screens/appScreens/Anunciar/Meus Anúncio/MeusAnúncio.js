@@ -9,25 +9,25 @@ const anuncios = [
     nome: 'Gabinete Gamer Montech X3 MESH',
     preco: 'R$ 219,90',
     localizacao: 'Itu - São Paulo',
-    imagem: 'https://example.com/gabinete.jpg' // Substitua pelo link real da imagem
+    imagem: 'https://example.com/gabinete.jpg'
   },
   {
     id: '2',
     categoria: 'Monitores',
-    nome: 'Monitor Gamer XYZ 24"',
+    nome: 'Monitor Gamer XYZ 24" ',
     preco: 'R$ 299,90',
     localizacao: 'Itu - São Paulo',
-    imagem: 'https://example.com/monitor.jpg' // Substitua pelo link real da imagem
+    imagem: 'https://example.com/monitor.jpg'
   },
-  // Adicione mais itens conforme necessário
 ];
 
-const App = () => {
+export default function MeusAnúncio({ navigation }) {
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   const renderAnuncio = ({ item }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.anuncioContainer}
       onPress={() => {
         setSelectedItem(item);
@@ -43,11 +43,14 @@ const App = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header com o botão Voltar */}
       <View style={styles.headerContainer}>
-        <Ionicons name="arrow-back" size={24} color="#fff" />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
         <Text style={styles.headerText}>Meus anúncios</Text>
       </View>
-      
+
       {['Gabinetes', 'Monitores'].map(categoria => (
         <View key={categoria}>
           <Text style={styles.categoria}>{categoria}</Text>
@@ -60,6 +63,7 @@ const App = () => {
         </View>
       ))}
 
+      {/* Modal para exibir detalhes do anúncio */}
       {selectedItem && (
         <Modal
           animationType="slide"
@@ -98,6 +102,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFA500',
     padding: 15,
+  },
+  backButton: {
+    marginRight: 10,
   },
   headerText: {
     color: '#fff',
@@ -182,5 +189,3 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   }
 });
-
-export default App;

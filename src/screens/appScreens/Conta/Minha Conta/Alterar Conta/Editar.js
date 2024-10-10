@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
@@ -14,6 +15,20 @@ const AlterarContaScreen = () => {
       <View style={styles.navbar}>
         <TouchableOpacity style={styles.backButton}>
           <Text style={styles.backButtonText}>{"<"}</Text>
+=======
+import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+
+export default function Editar() {
+  const navigation = useNavigation();
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>←</Text>
+>>>>>>> origin/main
         </TouchableOpacity>
         <Text style={styles.navbarTitle}>Alterar Conta</Text>
       </View>
@@ -67,6 +82,7 @@ const AlterarContaScreen = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -140,7 +156,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+<<<<<<< HEAD
 });
 
 export default AlterarContaScreen;
 
+=======
+});
+>>>>>>> origin/main
