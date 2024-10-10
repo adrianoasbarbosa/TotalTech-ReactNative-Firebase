@@ -1,5 +1,5 @@
 import { AntDesign } from '@expo/vector-icons';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -41,25 +41,19 @@ export default function Cadastro({ navigation }) {
                     apelido: apelido,
                     cpf: cpf
                 });
+                // Limpar os campos após o cadastro
                 setEmail('');
                 setSenha('');
                 setConfirmarSenha('');
                 setApelido('');
                 setCpf('');
+                // Navegar para a tela de login
                 navigation.navigate('Login');
-                sendEmailVerification(auth.currentUser)
-                    .then(() => {
-                        Toast.show({
-                            type: 'success',
-                            text1: 'Verifique seu Email',
-                            text2: 'Por favor verifique seu email para poder continuar!',
-                        });
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao enviar email de verificação:", error);
-                    });
-
-
+                Toast.show({
+                    type: 'success', // Correção feita aqui
+                    text1: 'Sucesso ao criar Conta',
+                    text2: 'Parabéns por realizar o cadastro!',
+                });
             })
             .catch((error) => {
                 const errorMessage = error.message;
@@ -70,7 +64,7 @@ export default function Cadastro({ navigation }) {
                 });
             });
     };
-
+    
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <ScrollView contentContainerStyle={styles.container}>

@@ -4,7 +4,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { auth, db } from '../../../../config/firebaseConfig'; // Certifique-se de exportar db de firebaseConfig
+import { auth, db } from '../../../../config/firebaseConfig';
 import Fonts from '../../../../utils/Fonts';
 
 export default function RecuperarSenha({ navigation }) {

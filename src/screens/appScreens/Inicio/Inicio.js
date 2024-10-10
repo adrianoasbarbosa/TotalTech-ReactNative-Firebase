@@ -1,14 +1,48 @@
 import { AntDesign } from '@expo/vector-icons';
-import React from 'react';
-import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { collection, getDocs } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, StatusBar, TextInput, RefreshControl } from 'react-native';
+import { db } from '../../../config/firebaseConfig';
 
-export default function Inicio() {
-    const navigation = useNavigation();
+export default function Inicio({ navigation }) {
+    const [products, setProducts] = useState([]);
+    const [isRefreshing, setIsRefreshing] = useState(false); 
+
+    const fetchProducts = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, 'Anuncios'));
+            const productsData = querySnapshot.docs.map(doc => ({
+                id: doc.id,  
+                ...doc.data() 
+            }));
+            setProducts(productsData);
+        } catch (error) {
+            console.error("Erro ao buscar produtos: ", error);
+        }
+    };
+
+    const onRefresh = async () => {
+        setIsRefreshing(true);
+        await fetchProducts();
+        setIsRefreshing(false);
+    };
+
+    useEffect(() => {
+        fetchProducts(); 
+    }, []);
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={styles.container}>
+            <ScrollView
+                contentContainerStyle={styles.container}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={onRefresh}
+                        colors={['#FE8330']}
+                    />
+                }
+            >
                 <StatusBar backgroundColor={"#FE8330"} />
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuIcon}>
@@ -19,7 +53,7 @@ export default function Inicio() {
                         placeholder="Buscar"
                         placeholderTextColor="#999"
                     />
-                    <TouchableOpacity style={styles.searchIcon}>
+                    <TouchableOpacity style={styles.searchIcon} onPress={() => navigation.navigate('Compras')}>
                         <AntDesign name="shoppingcart" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
@@ -37,34 +71,26 @@ export default function Inicio() {
                         contentContainerStyle={styles.bannerContainer}
                     >
                         <Image
-                            source={{ uri: 'https://via.placeholder.com/400x150' }}
-                            style={styles.bannerImage}
-                        />
-                        <Image
-                            source={{ uri: 'https://via.placeholder.com/400x150' }}
-                            style={styles.bannerImage}
-                        />
-                        <Image
-                            source={{ uri: 'https://via.placeholder.com/400x150' }}
+                            source={require('../../../assets/images/banner.png')}
                             style={styles.bannerImage}
                         />
                     </ScrollView>
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
                     <View style={styles.category}>
-                        <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.categoryImage} />
+                        <Image source={require('../../../assets/images/1.png')} style={styles.categoryImage} />
                         <Text style={styles.categoryText}>Gabinetes</Text>
                     </View>
                     <View style={styles.category}>
-                        <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.categoryImage} />
+                        <Image source={require('../../../assets/images/2.png')} style={styles.categoryImage} />
                         <Text style={styles.categoryText}>Celulares e Smartphones</Text>
                     </View>
                     <View style={styles.category}>
-                        <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.categoryImage} />
+                        <Image source={require('../../../assets/images/3.png')} style={styles.categoryImage} />
                         <Text style={styles.categoryText}>Placas de Vídeo</Text>
                     </View>
                     <View style={styles.category}>
-                        <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.categoryImage} />
+                        <Image source={require('../../../assets/images/4.png')} style={styles.categoryImage} />
                         <Text style={styles.categoryText}>Placas Mãe</Text>
                     </View>
                 </ScrollView>
@@ -73,26 +99,20 @@ export default function Inicio() {
                 <View style={styles.productsContainer}>
                     <Text style={styles.sectionTitle}>Mais vistos no mundo em Gabinetes</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.productsScrollContainer}>
-                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 1 })}>
-                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
-                            <Text style={styles.productName}>Gabinete Gamer A</Text>
-                            <Text style={styles.productPrice}>R$ 219,90</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 2 })}>
-                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
-                            <Text style={styles.productName}>Gabinete Gamer B</Text>
-                            <Text style={styles.productPrice}>R$ 169,90</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 3 })}>
-                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
-                            <Text style={styles.productName}>Gabinete Gamer C</Text>
-                            <Text style={styles.productPrice}>R$ 249,90</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.productCard} onPress={() => navigation.navigate('DetalhesProduto', { productId: 4 })}>
-                            <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.productImage} />
-                            <Text style={styles.productName}>Gabinete Gamer D</Text>
-                            <Text style={styles.productPrice}>R$ 199,90</Text>
-                        </TouchableOpacity>
+                        {products.map((product, index) => (
+                            <TouchableOpacity
+                                key={product.id} // Usar o ID do produto como chave
+                                style={styles.productCard}
+                                onPress={() => navigation.navigate('ProductItem', { productId: product.id })} // Passa o ID do produto
+                            >
+                                <Image
+                                    source={{ uri: product.images[0] }}
+                                    style={styles.productImage}
+                                />
+                                <Text style={styles.productName}>{product.title}</Text>
+                                <Text style={styles.productPrice}>R$ {product.price}</Text>
+                            </TouchableOpacity>
+                        ))}
                     </ScrollView>
                 </View>
 
@@ -125,7 +145,7 @@ export default function Inicio() {
             </ScrollView>
         </SafeAreaView>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -202,12 +222,12 @@ const styles = StyleSheet.create({
     },
     productsContainer: {
         paddingHorizontal: 23,
-        marginVertical: 20, // Espaçamento vertical entre as seções
+        marginVertical: 20,
     },
     sectionTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        marginVertical: 10, // Espaçamento entre o título e os produtos
+        marginVertical: 10,
     },
     productCard: {
         width: 150,
@@ -226,10 +246,11 @@ const styles = StyleSheet.create({
     },
     productName: {
         fontSize: 14,
+        fontWeight: 'bold',
         marginBottom: 5,
     },
     productPrice: {
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 12,
+        color: '#FE8330',
     },
 });

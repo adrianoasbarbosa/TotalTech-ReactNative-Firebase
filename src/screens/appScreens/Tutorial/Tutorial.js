@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Modal, ScrollView } from 'react-native';
-import { AntDesign } from '@expo/vector-icons'; // Importando a biblioteca de ícones
+import { AntDesign } from '@expo/vector-icons';
 
 export default function Tutorial({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -117,31 +117,27 @@ export default function Tutorial({ navigation }) {
 
     return (
         <View style={styles.container}>
-            {/* Cabeçalho */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <AntDesign name="arrowleft" size={24} color="white" /> {/* Ícone de seta de voltar */}
+                    <AntDesign name="arrowleft" size={24} color="white" />
                 </TouchableOpacity>
                 <Text style={styles.title}>Tutorial</Text>
             </View>
 
-            {/* Subtítulo */}
             <Text style={styles.subtitle}>
                 Aqui você terá acesso a informações sobre cada componente do seu computador.
             </Text>
 
-            {/* Opções com divisores */}
+
             {['Placa Mãe', 'Processadores', 'Placa de Vídeo', 'Armazenamento', 'Memória', 'Gabinete'].map((item, index) => (
                 <View key={index}>
                     <TouchableOpacity style={styles.option} onPress={() => handleOpenModal(item)}>
                         <Text style={styles.optionText}>{item}</Text>
                     </TouchableOpacity>
-                    {/* Divisor */}
                     {index < 5 && <View style={styles.divider} />}
                 </View>
             ))}
 
-            {/* Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -166,9 +162,9 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FF8C00', // Tom laranja como no layout
+        backgroundColor: '#FF8C00',
         padding: 16,
-        height: 56, // Altura do cabeçalho ajustada para ficar igual à da imagem
+        height: 56,
     },
     backButton: {
         paddingRight: 8,
@@ -179,28 +175,28 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     subtitle: {
-        fontSize: 14, // Tamanho de fonte ajustado para combinar com a imagem
+        fontSize: 14,
         textAlign: 'center',
         marginVertical: 16,
     },
     option: {
-        paddingVertical: 16, // Altura ajustada para maior espaçamento
+        paddingVertical: 16,
         paddingHorizontal: 16,
     },
     optionText: {
         fontSize: 18,
-        color: '#000', // Texto na cor preta para combinar com a imagem
+        color: '#000',
     },
     divider: {
         height: 1,
-        backgroundColor: '#ccc', // Divisores em cinza claro
+        backgroundColor: '#ccc',
         marginHorizontal: 16,
     },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo do modal com transparência
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalInner: {
         width: '90%',
@@ -220,7 +216,7 @@ const styles = StyleSheet.create({
         lineHeight: 24,
     },
     closeButton: {
-        backgroundColor: '#FF8C00', // Cor laranja para o botão
+        backgroundColor: '#FF8C00',
         padding: 10,
         borderRadius: 5,
         marginTop: 16,

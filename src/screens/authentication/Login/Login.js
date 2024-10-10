@@ -57,10 +57,8 @@ export default function Login({ navigation }) {
                     <TouchableOpacity onPress={() => navigation.navigate('RecuperarSenha')}>
                         <Text style={styles.forgotPassword}>Esqueceu sua senha?</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                        <TouchableOpacity onPress={() => navigation.navigate('DrawerApp')} style={styles.loginButton}>
-                            <Text style={styles.loginButtonText}>Entrar</Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
+                        <Text style={styles.loginButtonText}>Entrar</Text>
                     </TouchableOpacity>
                     <View style={styles.signupContainer}>
                         <Text style={styles.signupText1}>Não tem uma conta? </Text>

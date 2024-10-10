@@ -5,6 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebaseConfig';
+import Fonts from '../utils/Fonts';
 
 const CustomDrawerContent = (props) => {
     const { navigation } = props;
@@ -36,7 +37,7 @@ const CustomDrawerContent = (props) => {
                 {user ? (
                     <>
                         <Text style={styles.headerText}>{userInfo.apelido || 'Usuário'}</Text>
-                        <Text style={styles.headerText}>{userInfo.email || 'email@example.com'}</Text>
+                        <Text style={styles.headerTextEmail}>{userInfo.email || 'email@example.com'}</Text>
                     </>
                 ) : (
                     <>
@@ -62,6 +63,13 @@ const styles = StyleSheet.create({
     headerText: {
         color: '#fff',
         fontSize: 18,
+        fontFamily: Fonts['poppins-bold'],
+        marginVertical: 3,
+    },
+    headerTextEmail: {
+        color: '#fff',
+        fontSize: 12,
+        fontFamily: Fonts['poppins-regular'],
         marginVertical: 5,
     },
     loginButton: {
