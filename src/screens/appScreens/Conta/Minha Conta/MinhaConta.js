@@ -1,4 +1,7 @@
 import React from 'react';
+<<<<<<< HEAD
+import { View, Text, Image, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+=======
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 export default function MinhaConta({ navigation }) {
@@ -15,36 +18,47 @@ export default function MinhaConta({ navigation }) {
     ]);
     navigation.navigate('Editar');
   };
+>>>>>>> origin/main
 
+const MinhaContaScreen = () => {
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
+      {/* Botão de voltar */}
+      <TouchableOpacity style={styles.backButton}>
+        <Text style={styles.backButtonText}>{"<"}</Text>
+      </TouchableOpacity>
+
+      {/* Título */}
+      <Text style={styles.title}>Minha Conta</Text>
+
+      {/* Foto de perfil */}
+      <View style={styles.profilePicture}>
+        <Text style={styles.profilePictureText}>160 x 160</Text>
+=======
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerText}>Minha Conta</Text>
+>>>>>>> origin/main
       </View>
 
-      <View style={styles.profilePicContainer}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/120' }}
-          style={styles.profilePic}
-        />
+      {/* Informações da conta */}
+      <View style={styles.infoContainer}>
+        <Text style={styles.infoLabel}>Nome:</Text>
+        <Text style={styles.infoText}>Bruno Brasil</Text>
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.infoText}><Text style={styles.label}>Nome:</Text> Bruno Brasil</Text>
-        <Text style={styles.infoText}><Text style={styles.label}>Email:</Text> brunosai2005@gmail.com</Text>
+        <Text style={styles.infoLabel}>Email:</Text>
+        <Text style={styles.infoText}>brunosai2005@gmail.com</Text>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.homeButton}>
-          <Text style={styles.homeButtonText}>Inicio</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-          <Text style={styles.editButtonText}>Alterar conta</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Botão Alterar conta */}
+      <TouchableOpacity style={styles.changeButton}>
+        <Text style={styles.changeButtonText}>Alterar conta</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -52,68 +66,61 @@ export default function MinhaConta({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    flexDirection: 'row',
+    backgroundColor: '#fff',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 20,
   },
   backButton: {
-    marginRight: 10,
+    alignSelf: 'flex-start',
   },
   backButtonText: {
     fontSize: 24,
-    color: '#FF7F00',
+    color: '#ff6600',
   },
-  headerText: {
+  title: {
     fontSize: 24,
-    color: '#FF7F00',
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
-  profilePicContainer: {
+  profilePicture: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: '#d3d3d3',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
   },
-  profilePic: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+  profilePictureText: {
+    color: '#808080',
   },
   infoContainer: {
-    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: '100%',
+    marginBottom: 15,
+  },
+  infoLabel: {
+    fontWeight: 'bold',
+    marginRight: 10,
   },
   infoText: {
-    fontSize: 18,
-    marginVertical: 5,
+    color: '#000',
   },
-  label: {
-    fontWeight: 'bold',
+  changeButton: {
+    marginTop: 40,
+    backgroundColor: '#ff6600',
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    borderRadius: 5,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  homeButton: {
-    width: '48%',
-    padding: 10,
-    backgroundColor: '#FFF0E0',
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  homeButtonText: {
-    color: '#FF7F00',
-    fontSize: 18,
-  },
-  editButton: {
-    width: '48%',
-    padding: 10,
-    backgroundColor: '#FF7F00',
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  editButtonText: {
+  changeButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
   },
 });
+<<<<<<< HEAD
+
+export default MinhaContaScreen;
+=======
+>>>>>>> origin/main
