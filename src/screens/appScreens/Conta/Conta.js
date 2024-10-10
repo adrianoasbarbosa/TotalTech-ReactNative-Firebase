@@ -2,7 +2,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { getAuth, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { db } from '../../../config/firebaseConfig';
 
 export default function Conta({ navigation }) {
@@ -29,18 +29,40 @@ export default function Conta({ navigation }) {
     }, [user]);
 
     const handleLogout = async () => {
-        try {
-            await signOut(auth);
-            navigation.navigate('OnBoarding'); // Redirecione para a tela de login ou qualquer outra tela após o logout
-        } catch (error) {
-            console.error('Erro ao sair:', error);
-        }
+        Alert.alert(
+            "Confirmar saída",
+            "Você tem certeza de que deseja sair?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                {
+                    text: "Sair",
+                    onPress: async () => {
+                        try {
+                            await signOut(auth);
+                            navigation.navigate('OnBoarding'); // Redirecione para a tela de login ou qualquer outra tela após o logout
+                        } catch (error) {
+                            console.error('Erro ao sair:', error);
+                        }
+                    }
+                }
+            ]
+        );
     };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
                 <View style={styles.header}>
+                    {/* Botão de voltar */}
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <AntDesign name="arrowleft" size={24} color="#fff" />
+                    </TouchableOpacity>
                     <Text style={styles.headerText}>Perfil</Text>
                 </View>
                 <View style={styles.profile}>
@@ -57,7 +79,7 @@ export default function Conta({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.menuItem}
-                    onPress={() => navigation.navigate('MeusAnuncios')} // Adicione navegação
+                    onPress={() => navigation.navigate('MeusAnúncio')} // Adicione navegação
                 >
                     <AntDesign name="profile" size={30} color="#000" />
                     <Text style={styles.menuItemText}>Meus Anúncios</Text>
@@ -112,6 +134,9 @@ const styles = StyleSheet.create({
         padding: 15,
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    backButton: {
+        padding: 10,
     },
     headerText: {
         color: '#fff',

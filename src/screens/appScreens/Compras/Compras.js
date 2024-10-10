@@ -7,7 +7,7 @@ export default function Compras({ navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <AntDesign name="arrowleft" size={24} color="#fff" onPress={() => {/* Add navigation back action here */ }} />
+                <AntDesign name="arrowleft" size={24} color="#fff" onPress={() => navigation.goBack()} />
                 <Text style={styles.headerText}>Carrinho</Text>
             </View>
             <View style={styles.emptyCart}>

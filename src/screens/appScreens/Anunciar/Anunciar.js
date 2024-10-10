@@ -52,19 +52,33 @@ export default function Anunciar({ navigation }) {
     };
 
     const handleSubmit = async () => {
+        // Verificar se o usuário está logado
+        const user = auth.currentUser;
+        if (!user) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'Você precisa estar logado para enviar um anúncio.',
+                visibilityTime: 3000,
+                position: 'top',
+            });
+            return;
+        }
+
+        // Verificar se todos os campos foram preenchidos
         if (!title || !description || !category || !cep || !price) {
             Toast.show({
                 type: 'error',
                 text1: 'Erro',
                 text2: 'Por favor, preencha todos os campos.',
                 visibilityTime: 3000,
-                position: 'top'
+                position: 'top',
             });
             return;
         }
 
         try {
-            const userId = auth.currentUser.uid;
+            const userId = user.uid; // Usar o userId do usuário logado
 
             // Adicionar um novo documento na coleção "Anuncios"
             await addDoc(collection(db, "Anuncios"), {
@@ -75,7 +89,7 @@ export default function Anunciar({ navigation }) {
                 price,
                 userId,
                 images: photos,
-                createdAt: new Date(), // Adicione um campo para data de criação, se desejar
+                createdAt: new Date(),
             });
 
             Toast.show({
@@ -83,7 +97,7 @@ export default function Anunciar({ navigation }) {
                 text1: 'Sucesso',
                 text2: 'Anúncio cadastrado com sucesso!',
                 visibilityTime: 3000,
-                position: 'top'
+                position: 'top',
             });
 
             // Limpar todos os campos do formulário
@@ -93,16 +107,13 @@ export default function Anunciar({ navigation }) {
             setCep('');
             setPrice('');
             setPhotos([]);
-
-            // Opcional: Navegar para outra tela ou exibir uma mensagem
-            // navigation.navigate('Inicio');
         } catch (e) {
             Toast.show({
                 type: 'error',
                 text1: 'Erro ao cadastrar',
                 text2: e.message,
                 visibilityTime: 3000,
-                position: 'top'
+                position: 'top',
             });
         }
     };
@@ -121,7 +132,7 @@ export default function Anunciar({ navigation }) {
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <TouchableOpacity style={styles.backButton}>
+                        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                             <AntDesign name="arrowleft" size={24} color="white" />
                         </TouchableOpacity>
                         <Text style={styles.headerText}>Inserir anúncio</Text>
