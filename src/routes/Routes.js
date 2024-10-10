@@ -40,6 +40,7 @@ export default function Routes() {
             <Stack.Screen name="ProductItem" component={ProductItem} />
             <Stack.Screen name="Compras" component={Compras} />
             <Stack.Screen name="MeusAnúncio" component={MeusAnúncio} />
+            <Stack.Screen name="Inicio" component={Inicio} />
             <Stack.Screen name="DrawerApp" component={DrawerApp} />
         </Stack.Navigator>
     )

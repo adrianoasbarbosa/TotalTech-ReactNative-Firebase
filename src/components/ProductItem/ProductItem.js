@@ -1,71 +1,84 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Share, SafeAreaView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native'; // Para navegação
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../config/firebaseConfig';
 
-export default function ProductItem({ route }) {
+export default function ProductItem({ route, navigation }) {
+    const { productId } = route.params; // Pegando o id do produto
     const [product, setProduct] = useState(null); // Estado para armazenar os dados do produto
-    const [isFavorited, setIsFavorited] = useState(false); // Estado para controlar se o produto foi favoritado
-    const { productId } = route.params;  // Obtém o ID do produto da navegação
-    const navigation = useNavigation(); // Instância de navegação
+    const [sellerName, setSellerName] = useState(''); // Estado para armazenar o nome do anunciante
+    const [isFavorited, setIsFavorited] = useState(false);
 
     useEffect(() => {
-        // Simulação de dados estáticos, como se tivesse vindo do Firestore
-        const productData = {
-            id: productId,
-            name: "Gabinete Gamer Montech x3 MESH",
-            price: "219,90",
-            publishedDate: "20/03 às 15:30",
-            description: "Gabinete 100% novo, sem uso, vem com 6 Fans Rainbow...",
-            zipCode: "09550630",
-            city: "Itu",
-            neighborhood: "Jardim Santa Rosa",
-            sellerName: "Bruno B.",
-            sellerSince: "abril de 2022",
-            imageUrl: "https://via.placeholder.com/200", // Exemplo de URL para imagem
+        const fetchProductDetails = async () => {
+            try {
+                const productDoc = await getDoc(doc(db, 'Anuncios', productId));
+                if (productDoc.exists()) {
+                    const productData = productDoc.data();
+                    setProduct({
+                        ...productData,
+                        publishedDate: productData.publishedDate ? productData.publishedDate.toDate().toLocaleDateString() : "Data não disponível", // Verifica se existe
+                        sellerSince: productData.sellerSince ? productData.sellerSince.toDate().toLocaleDateString() : "Data não disponível" // Verifica se existe
+                    });
+
+                    // Busca o nome do anunciante com base no userId
+                    if (productData.userId) {
+                        const userDoc = await getDoc(doc(db, 'Usuarios', productData.userId));
+                        if (userDoc.exists()) {
+                            setSellerName(userDoc.data().name); // Define o nome do anunciante
+                        } else {
+                            console.log("Anunciante não encontrado");
+                        }
+                    }
+                } else {
+                    console.log("Produto não encontrado");
+                }
+            } catch (error) {
+                console.error("Erro ao buscar detalhes do produto: ", error);
+            }
         };
 
-        setProduct(productData); // Define os dados no estado
+        fetchProductDetails();
     }, [productId]);
 
     const handleShare = async () => {
-        try {
-            await Share.share({
-                message: `Confira este anúncio: ${product.name} por R$ ${product.price}. Mais detalhes: ${product.description}. Localização: ${product.city}, ${product.neighborhood}.`,
-            });
-        } catch (error) {
-            console.error('Erro ao compartilhar:', error.message);
+        if (product) {
+            try {
+                await Share.share({
+                    message: `Confira este anúncio: ${product.title} por R$ ${product.price}. Mais detalhes: ${product.description}.`,
+                });
+            } catch (error) {
+                console.error('Erro ao compartilhar:', error.message);
+            }
         }
     };
 
     const toggleFavorite = () => {
-        setIsFavorited(!isFavorited); // Alterna entre favoritar e desfavoritar
+        setIsFavorited(!isFavorited);
     };
 
     if (!product) {
         return (
-            <View style={styles.container}>
-                <Text style={styles.loadingText}>Carregando...</Text>
+            <View style={styles.loadingContainer}>
+                <Text style={styles.loadingText}>Carregando produto...</Text>
             </View>
         );
     }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container} contentContainerStyle={styles.scrollViewContent}>
                 {/* Cabeçalho */}
                 <View style={styles.header}>
-                    {/* Botão de Voltar */}
                     <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                         <AntDesign name="left" style={styles.icon} />
                     </TouchableOpacity>
                     <Text style={styles.title}>Anúncio</Text>
                     <View style={styles.headerIcons}>
-                        {/* Ícone de Favorito */}
                         <TouchableOpacity style={styles.heartIcon} onPress={toggleFavorite}>
                             <AntDesign name={isFavorited ? "heart" : "hearto"} style={[styles.icon, isFavorited && styles.favorited]} />
                         </TouchableOpacity>
-                        {/* Ícone de Compartilhar */}
                         <TouchableOpacity style={styles.shareIcon} onPress={handleShare}>
                             <AntDesign name="sharealt" style={styles.icon} />
                         </TouchableOpacity>
@@ -74,12 +87,12 @@ export default function ProductItem({ route }) {
 
                 {/* Imagem do produto */}
                 <View style={styles.imageContainer}>
-                    <Image source={{ uri: product.imageUrl }} style={styles.image} />
+                    <Image source={{ uri: product.images[0] }} style={styles.image} />
                 </View>
                 <Text style={styles.imageCounter}>1/6</Text>
 
                 {/* Detalhes do produto */}
-                <Text style={styles.productName}>{product.name}</Text>
+                <Text style={styles.productName}>{product.title}</Text>
                 <Text style={styles.price}>R$ {product.price}</Text>
                 <Text style={styles.publishedDate}>Publicado em {product.publishedDate}</Text>
 
@@ -101,7 +114,7 @@ export default function ProductItem({ route }) {
                 {/* Anunciante */}
                 <Text style={styles.sectionTitle}>Anunciante</Text>
                 <View style={styles.advertiserContainer}>
-                    <Text style={styles.locationLabel}>{product.sellerName}</Text>
+                    <Text style={styles.locationLabel}>{sellerName || "Anunciante não encontrado"}</Text>
                     <Text style={styles.locationLabel}>Na TotalTech desde {product.sellerSince}</Text>
                 </View>
 
@@ -119,6 +132,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    scrollViewContent: {
+        paddingBottom: 20,
+    },
     loadingText: {
         fontSize: 16,
         color: '#999',
@@ -130,7 +146,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#FF6F00', // Laranja vibrante
+        backgroundColor: '#FF6F00',
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
     },
@@ -143,11 +159,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     icon: {
-        fontSize: 28, // Aumentei o tamanho dos ícones
+        fontSize: 28,
         color: '#333',
     },
     favorited: {
-        color: '#FF0000', // Coração vermelho quando favoritado
+        color: '#FF0000',
     },
     title: {
         fontSize: 18,
@@ -184,46 +200,47 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
-        padding: 16,
+        paddingHorizontal: 16,
     },
     price: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#FF6F00', // Laranja vibrante
-        padding: 16,
+        color: '#FF6F00',
+        paddingHorizontal: 16,
     },
     publishedDate: {
         fontSize: 14,
         color: '#666',
-        padding: 16,
+        paddingHorizontal: 16,
     },
     sectionTitle: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#333',
-        padding: 16,
+        paddingHorizontal: 16,
+        marginTop: 16,
     },
     descriptionText: {
         fontSize: 14,
         color: '#666',
-        padding: 16,
+        paddingHorizontal: 16,
     },
     readMoreButton: {
         padding: 16,
     },
     readMoreButtonText: {
         fontSize: 14,
-        color: '#FF6F00', // Laranja vibrante
+        color: '#FF6F00',
     },
     locationContainer: {
-        padding: 16,
+        paddingHorizontal: 16,
     },
     locationLabel: {
         fontSize: 14,
         color: '#666',
     },
     advertiserContainer: {
-        backgroundColor: '#f0f0f0', // Quadrado cinza em volta do anunciante
+        backgroundColor: '#f0f0f0',
         padding: 16,
         borderRadius: 8,
         marginHorizontal: 16,
@@ -231,7 +248,8 @@ const styles = StyleSheet.create({
     chatButton: {
         padding: 16,
         borderRadius: 10,
-        backgroundColor: '#FF6F00', // Laranja vibrante
+        backgroundColor: '#FF6F00',
+        marginHorizontal: 16,
     },
     chatButtonText: {
         fontSize: 14,

@@ -11,7 +11,10 @@ export default function Inicio({ navigation }) {
     const fetchProducts = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'Anuncios'));
-            const productsData = querySnapshot.docs.map(doc => doc.data());
+            const productsData = querySnapshot.docs.map(doc => ({
+                id: doc.id,    // Inclui o ID do documento
+                ...doc.data()  // Mantém os outros dados do documento
+            }));
             setProducts(productsData);
         } catch (error) {
             console.error("Erro ao buscar produtos: ", error);
@@ -98,9 +101,9 @@ export default function Inicio({ navigation }) {
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.productsScrollContainer}>
                         {products.map((product, index) => (
                             <TouchableOpacity
-                                key={index}
+                                key={product.id} // Usar o ID do produto como chave
                                 style={styles.productCard}
-                                onPress={() => navigation.navigate('ProductItem', { productId: product.id })}
+                                onPress={() => navigation.navigate('ProductItem', { productId: product.id })} // Passa o ID do produto
                             >
                                 <Image
                                     source={{ uri: product.images[0] }}

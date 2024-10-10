@@ -29,28 +29,16 @@ export default function Conta({ navigation }) {
     }, [user]);
 
     const handleLogout = async () => {
-        Alert.alert(
-            "Confirmar saída",
-            "Você tem certeza de que deseja sair?",
-            [
-                {
-                    text: "Cancelar",
-                    style: "cancel"
-                },
-                {
-                    text: "Sair",
-                    onPress: async () => {
-                        try {
-                            await signOut(auth);
-                            navigation.navigate('OnBoarding'); // Redirecione para a tela de login ou qualquer outra tela após o logout
-                        } catch (error) {
-                            console.error('Erro ao sair:', error);
-                        }
-                    }
-                }
-            ]
-        );
+        try {
+            await signOut(auth);
+            navigation.navigate('OnBoarding'); // Redireciona para a tela de login após o logout
+        } catch (error) {
+            console.error('Erro ao sair:', error);
+            Alert.alert('Erro', 'Não foi possível desconectar. Tente novamente mais tarde.'); // Apenas exibe um erro se houver
+        }
     };
+
+
 
     return (
         <SafeAreaView style={{ flex: 1 }}>

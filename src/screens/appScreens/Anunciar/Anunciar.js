@@ -65,7 +65,6 @@ export default function Anunciar({ navigation }) {
             return;
         }
 
-        // Verificar se todos os campos foram preenchidos
         if (!title || !description || !category || !cep || !price) {
             Toast.show({
                 type: 'error',
@@ -78,10 +77,10 @@ export default function Anunciar({ navigation }) {
         }
 
         try {
-            const userId = user.uid; // Usar o userId do usuário logado
+            const userId = user.uid;
 
             // Adicionar um novo documento na coleção "Anuncios"
-            await addDoc(collection(db, "Anuncios"), {
+            const docRef = await addDoc(collection(db, "Anuncios"), {
                 title,
                 description,
                 category,
@@ -91,6 +90,9 @@ export default function Anunciar({ navigation }) {
                 images: photos,
                 createdAt: new Date(),
             });
+
+            // Capturar o ID do documento
+            const productId = docRef.id;
 
             Toast.show({
                 type: 'success',
@@ -107,6 +109,9 @@ export default function Anunciar({ navigation }) {
             setCep('');
             setPrice('');
             setPhotos([]);
+
+            // Navegar para a tela inicial, passando o ID do produto
+            navigation.navigate('Inicio', { productId });
         } catch (e) {
             Toast.show({
                 type: 'error',
