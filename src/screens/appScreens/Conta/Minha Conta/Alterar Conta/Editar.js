@@ -1,47 +1,66 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 
-const EditAccountScreen = () => {
+const AlterarContaScreen = () => {
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
   return (
     <View style={styles.container}>
-      {/* Cabeçalho */}
-      <View style={styles.header}>
+      
+      {/* Navbar Laranja */}
+      <View style={styles.navbar}>
         <TouchableOpacity style={styles.backButton}>
-          <Text style={styles.backButtonText}>←</Text>
+          <Text style={styles.backButtonText}>{"<"}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerText}>Alterar Conta</Text>
+        <Text style={styles.navbarTitle}>Alterar Conta</Text>
       </View>
 
-      {/* Seção de Alteração de Foto */}
-      <View style={styles.photoContainer}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/100' }}
-          style={styles.profilePhoto}
-        />
-        <TouchableOpacity style={styles.changePhotoButton}>
-          <Text style={styles.changePhotoButtonText}>Alterar Foto</Text>
-        </TouchableOpacity>
+      {/* Foto de perfil */}
+      <View style={styles.profilePicture}>
+        <Text style={styles.profilePictureText}>96 x 96</Text>
       </View>
 
-      {/* Formulário */}
-      <View style={styles.formContainer}>
+      {/* Botão de alterar foto */}
+      <TouchableOpacity style={styles.alterPhotoButton}>
+        <Text style={styles.alterPhotoButtonText}>Alterar Foto</Text>
+      </TouchableOpacity>
+
+      {/* Campos de input */}
+      <View style={styles.inputContainer}>
+        <Text>Nome</Text>
         <TextInput
           style={styles.input}
           placeholder="Alterar Nome"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="exemplo@gmail.com"
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="****"
-          secureTextEntry
+          value={nome}
+          onChangeText={setNome}
         />
       </View>
 
-      {/* Botão de Confirmação */}
+      <View style={styles.inputContainer}>
+        <Text>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="exemplo@gmail.com"
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text>Senha</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="*******"
+          secureTextEntry={true}
+          value={senha}
+          onChangeText={setSenha}
+        />
+      </View>
+
+      {/* Botão Confirmar conta */}
       <TouchableOpacity style={styles.confirmButton}>
         <Text style={styles.confirmButtonText}>Confirmar conta</Text>
       </TouchableOpacity>
@@ -52,12 +71,17 @@ const EditAccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
   },
-  header: {
+  navbar: {
+    width: '100%',
+    height: 60,
+    backgroundColor: '#ff6600',
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 15,
     marginBottom: 20,
   },
   backButton: {
@@ -65,56 +89,58 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 24,
-    color: '#FF7F00',
+    color: '#fff',
   },
-  headerText: {
-    fontSize: 24,
-    color: '#FF7F00',
+  navbarTitle: {
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
   },
-  photoContainer: {
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  profilePhoto: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+  profilePicture: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
     backgroundColor: '#d3d3d3',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
   },
-  changePhotoButton: {
-    marginTop: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderColor: '#d3d3d3',
-    borderWidth: 1,
-    borderRadius: 8,
+  profilePictureText: {
+    color: '#808080',
   },
-  changePhotoButtonText: {
-    color: '#555555',
-    fontSize: 16,
-  },
-  formContainer: {
+  alterPhotoButton: {
+    backgroundColor: '#d3d3d3',
+    padding: 10,
+    borderRadius: 5,
     marginBottom: 20,
   },
+  alterPhotoButtonText: {
+    color: '#808080',
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 15,
+  },
   input: {
-    height: 50,
     borderColor: '#d3d3d3',
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginVertical: 8,
-    fontSize: 16,
+    padding: 10,
+    borderRadius: 5,
+    width: '100%',
+    marginTop: 5,
   },
   confirmButton: {
-    backgroundColor: '#FF7F00',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
+    marginTop: 30,
+    backgroundColor: '#ff6600',
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    borderRadius: 5,
   },
   confirmButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
   },
 });
 
-export default EditAccountScreen;
+export default AlterarContaScreen;
+
